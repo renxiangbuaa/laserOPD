@@ -37,7 +37,7 @@ Foam::radiation::laserModel::New
     const fvMesh& mesh
 )
 {
-    const word modelType(dict.get<word>("laserModel"));
+    const word modelType(dict.lookupOrDefault<word>("laserModel", "laserModel"));
 
     Info<< "Selecting laser beam mode is " << modelType << endl;
 

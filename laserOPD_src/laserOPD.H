@@ -55,8 +55,8 @@ SourceFiles
 #include "Function1.H"
 #include "interpolation2DTable.H"
 #include "labelField.H"
-#include "phasePairKey.H"
-#include "Enum.H"
+// #include "phasePairKey.H"
+// #include "Enum.H"
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 

@@ -1,0 +1,12 @@
+laserOPD.C
+
+laserParticle/laserParticle.C
+laserParticle/laserParticleIO.C
+
+laserModel/laserModel/laserModel.C
+laserModel/laserModel/laserModelNew.C
+laserModel/circularLaser/circularLaser.C
+laserModel/squreLaser/squreLaser.C
+laserModel/circularInSqureLaser/circularInSqureLaser.C
+
+LIB = $(FOAM_USER_LIBBIN)/liblaserOPD

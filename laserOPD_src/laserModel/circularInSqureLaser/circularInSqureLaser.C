@@ -52,10 +52,10 @@ Foam::radiation::circularInSqureLaser::circularInSqureLaser
 )
 :
     laserModel(dict, mesh),
-    nLength_(dict.optionalSubDict(type() + "Coeffs").get<label>("nLength")),
-    length_(dict.optionalSubDict(type() + "Coeffs").get<scalar>("length")),
-    directionX_(dict.optionalSubDict(type() + "Coeffs").get<vector>("directionX")),
-    radius_(dict.optionalSubDict(type() + "Coeffs").get<scalar>("radius"))
+    nLength_(readLabel(dict.optionalSubDict(type() + "Coeffs").lookup("nLength"))),
+    length_(readScalar(dict.optionalSubDict(type() + "Coeffs").lookup("length"))),
+    directionX_(dict.optionalSubDict(type() + "Coeffs").lookup("directionX")),
+    radius_(readScalar(dict.optionalSubDict(type() + "Coeffs").lookup("radius")))
 {}
 
 

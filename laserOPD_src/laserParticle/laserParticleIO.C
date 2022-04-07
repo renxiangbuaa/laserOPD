@@ -49,12 +49,7 @@ Foam::laserParticle::laserParticle
     bool newFormat
 )
 :
-    particle(mesh, is, readFields, newFormat),
-    xy_(Zero),
-    p0_(Zero),
-    p1_(Zero),
-    OPL_(0),
-    dA_(0)
+    particle(mesh, is, readFields, newFormat)
 {
     if (readFields)
     {

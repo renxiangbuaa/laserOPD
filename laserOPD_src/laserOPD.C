@@ -28,8 +28,8 @@ License
 #include "laserOPD.H"
 #include "fvmLaplacian.H"
 #include "fvmSup.H"
-#include "absorptionEmissionModel.H"
-#include "scatterModel.H"
+// #include "absorptionEmissionModel.H"
+// #include "scatterModel.H"
 #include "constants.H"
 #include "addToRunTimeSelectionTable.H"
 #include "unitConversion.H"
@@ -85,11 +85,16 @@ Foam::radiation::laserOPD::laserOPD(const volScalarField& rho)
 :
     radiationModel(typeName, rho),
     laserCloud_(mesh_, "laserCloud", IDLList<laserParticle>()),
-    maxTrackLength_(get<scalar>("maxTrackLength")),
-    densityRef_(get<scalar>("densityRef")),
-    GladstoneDale_(get<scalar>("GladstoneDale")),
-    focalLaserPosition_(get<point>("focalLaserPosition")),
-    laserDirection_(get<vector>("laserDirection")),
+    // maxTrackLength_(get<scalar>("maxTrackLength")),
+    // densityRef_(get<scalar>("densityRef")),
+    // GladstoneDale_(get<scalar>("GladstoneDale")),
+    // focalLaserPosition_(get<point>("focalLaserPosition")),
+    // laserDirection_(get<vector>("laserDirection")),
+    maxTrackLength_(readScalar(this->lookup("maxTrackLength"))),
+    densityRef_(readScalar(this->lookup("densityRef"))),
+    GladstoneDale_(readScalar(this->lookup("GladstoneDale"))),
+    focalLaserPosition_(this->lookup("focalLaserPosition")),
+    laserDirection_(this->lookup("laserDirection")),
     laserModePtr_(radiation::laserModel::New(*this, this->mesh_)),
     laserMode_(laserModePtr_()),
     GladstoneDaleField_
@@ -132,11 +137,16 @@ Foam::radiation::laserOPD::laserOPD
 :
     radiationModel(typeName, dict, rho),
     laserCloud_(mesh_, "laserCloud", IDLList<laserParticle>()),
-    maxTrackLength_(get<scalar>("maxTrackLength")),
-    densityRef_(get<scalar>("densityRef")),
-    GladstoneDale_(get<scalar>("GladstoneDale")),
-    focalLaserPosition_(get<point>("focalLaserPosition")),
-    laserDirection_(get<vector>("laserDirection")),
+    // maxTrackLength_(get<scalar>("maxTrackLength")),
+    // densityRef_(get<scalar>("densityRef")),
+    // GladstoneDale_(get<scalar>("GladstoneDale")),
+    // focalLaserPosition_(get<point>("focalLaserPosition")),
+    // laserDirection_(get<vector>("laserDirection")),
+    maxTrackLength_(readScalar(this->lookup("maxTrackLength"))),
+    densityRef_(readScalar(this->lookup("densityRef"))),
+    GladstoneDale_(readScalar(this->lookup("GladstoneDale"))),
+    focalLaserPosition_(this->lookup("focalLaserPosition")),
+    laserDirection_(this->lookup("laserDirection")),
     laserModePtr_(radiation::laserModel::New(*this, this->mesh_)),
     laserMode_(laserModePtr_()),
     GladstoneDaleField_
@@ -226,8 +236,8 @@ Foam::tmp<Foam::volScalarField> Foam::radiation::laserOPD::Rp() const
             mesh_.time().timeName(),
             mesh_,
             IOobject::NO_READ,
-            IOobject::NO_WRITE,
-            false
+            IOobject::NO_WRITE//,
+            // false
         ),
         mesh_,
         dimensionedScalar(dimPower/dimVolume/pow4(dimTemperature), Zero)
@@ -238,7 +248,6 @@ Foam::tmp<Foam::volScalarField> Foam::radiation::laserOPD::Rp() const
 Foam::tmp<Foam::DimensionedField<Foam::scalar, Foam::volMesh>>
 Foam::radiation::laserOPD::Ru() const
 {
-    // return Q_.internalField();
     return tmp<DimensionedField<scalar, volMesh>>::New
     (
             IOobject
