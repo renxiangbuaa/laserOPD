@@ -95,26 +95,10 @@ class laserOPDInfo
 {
 protected:
 
-        //- Switch to send output to Info as well
-        Switch log_;
-
-        //- List of cloud names
-        wordList cloudNames_;
-
-        //- Output file per cloud
-        PtrList<OFstream> filePtrs_;
-
     // Protected Member Functions
 
         //- File header information
-        virtual void writeFileHeader(Ostream& os) const;
-
-
-        //- No copy construct
-        laserOPDInfo(const laserOPDInfo&) = delete;
-
-        //- No copy assignment
-        void operator=(const laserOPDInfo&) = delete;
+        virtual void writeFileHeader(const label i);
 
 
 public:
@@ -133,6 +117,9 @@ public:
             const dictionary&
         );
 
+        //- No copy construct
+        laserOPDInfo(const laserOPDInfo&) = delete;
+
 
     //- Destructor
     virtual ~laserOPDInfo() = default;
@@ -148,6 +135,12 @@ public:
 
         //- Write
         virtual bool write();
+
+
+    // Member Operators
+
+        //- Disallow default bitwise assignment
+        void operator=(const laserOPDInfo&) = delete;
 };
 
 

@@ -56,16 +56,16 @@ namespace functionObjects
 
 // * * * * * * * * * * * * Protected Member Functions  * * * * * * * * * * * //
 
-void Foam::functionObjects::laserOPDInfo::writeFileHeader(Ostream& os) const
+void Foam::functionObjects::laserOPDInfo::writeFileHeader(const label i)
 {
-    writeHeader(os, "Cloud information");
-    writeCommented(os, "Time");
-    writeTabbed(os, "meanOPD");
-    writeTabbed(os, "coeffForTiltX");
-    writeTabbed(os, "coeffForTiltY");
-    writeTabbed(os, "rmsOPD");
-    writeTabbed(os, "rmsOPDtilt");
-    os  << endl;
+    writeHeader(file(), "Cloud information");
+    writeCommented(file(), "Time");
+    writeTabbed(file(), "meanOPD");
+    writeTabbed(file(), "coeffForTiltX");
+    writeTabbed(file(), "coeffForTiltY");
+    writeTabbed(file(), "rmsOPD");
+    writeTabbed(file(), "rmsOPDtilt");
+    file()  << endl;
 }
 
 
@@ -79,7 +79,7 @@ Foam::functionObjects::laserOPDInfo::laserOPDInfo
 )
 :
     regionFunctionObject(name, runTime, dict),
-    logFiles(obr_, name, dict)
+    logFiles(obr_, name)
 {
     read(dict);
 }
@@ -89,26 +89,25 @@ Foam::functionObjects::laserOPDInfo::laserOPDInfo
 
 bool Foam::functionObjects::laserOPDInfo::read(const dictionary& dict)
 {
-    if (regionFunctionObject::read(dict) && logFiles::read(dict))
-    {
-        logFiles::resetNames(dict.get<wordList>("clouds"));
+    regionFunctionObject::read(dict);
 
-        Info<< type() << " " << name() << ": ";
-        if (writeToFile() && names().size())
+    logFiles::resetNames(dict.lookup("clouds"));
+
+    Info<< type() << " " << name() << ": ";
+    if (names().size())
+    {
+        Info<< "applying to clouds:" << nl;
+        forAll(names(), cloudi)
         {
-            Info<< "applying to clouds:" << nl;
-            forAll(names(), cloudi)
-            {
-                Info<< "    " << names()[cloudi] << nl;
-                writeFileHeader(files(cloudi));
-            }
-            Info<< endl;
+            Info<< "    " << names()[cloudi] << nl;
         }
-        else
-        {
-            Info<< "no clouds to be processed" << nl << endl;
-        }
+        Info<< endl;
     }
+    else
+    {
+        Info<< "no clouds to be processed" << nl << endl;
+    }
+
 
     return true;
 }
@@ -122,6 +121,8 @@ bool Foam::functionObjects::laserOPDInfo::execute()
 
 bool Foam::functionObjects::laserOPDInfo::write()
 {
+    logFiles::write();
+
     forAll(names(), cloudi)
     {
         const word& cloudName = names()[cloudi];
@@ -145,12 +146,6 @@ bool Foam::functionObjects::laserOPDInfo::write()
         B = B/area;
         vector coeff=(inv(T) & B);
 
-        Info << "The average optical path is: " << B.x() << endl;
-        Info << "T: " << T << endl;
-        Info << "B: " << B << endl;
-
-
-
 
         //- root mean square of OPD
         scalar rmsOPD=0;
@@ -165,28 +160,16 @@ bool Foam::functionObjects::laserOPDInfo::write()
         rmsOPD = sqrt(rmsOPD/area);
         rmsOPDtilt = sqrt(rmsOPDtilt/area);
         
-        Info << "The rmsOPD is: " << rmsOPD << endl;
-        Info << "The rmsOPDtilt is: " << rmsOPDtilt << endl;
 
-        // Log << type() << " " << name() <<  " write:" << nl
-        //     << "    meanOPD    : " << meanOPD << nl
-        //     << "    rmsOPD     : " << rmsOPD << nl
-        //     << endl;
-
-
-
-
-        if (writeToFile())
+        if (Pstream::master())
         {
-            auto& os = files(cloudi);
-
-            writeCurrentTime(os);
-            os
-                << token::TAB << coeff.x()
-                << token::TAB << coeff.y()
-                << token::TAB << coeff.z()
-                << token::TAB << rmsOPD
-                << token::TAB << rmsOPDtilt
+            writeTime(file(cloudi));
+            file(cloudi)
+                << tab << coeff.x()
+                << tab << coeff.y()
+                << tab << coeff.z()
+                << tab << rmsOPD
+                << tab << rmsOPDtilt
                 << endl;
         }
     }

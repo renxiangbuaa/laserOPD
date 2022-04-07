@@ -37,22 +37,37 @@ Foam::radiation::laserModel::New
     const fvMesh& mesh
 )
 {
-    const word modelType(dict.get<word>("laserModel"));
+    const word modelType(dict.lookup("laserModel"));
 
     Info<< "Selecting laser beam mode is " << modelType << endl;
 
-    const auto cstrIter = dictionaryConstructorTablePtr_->cfind(modelType);
+    // const auto cstrIter = dictionaryConstructorTablePtr_->cfind(modelType);
+    
+    // if (!cstrIter.found())
+    // {
+    //     FatalIOErrorInLookup
+    //     (
+    //         dict,
+    //         "laserModel",
+    //         modelType,
+    //         *dictionaryConstructorTablePtr_
+    //     ) << exit(FatalIOError);
+    // }
+    
+    dictionaryConstructorTable::iterator cstrIter =
+        dictionaryConstructorTablePtr_->find(modelType);
 
-    if (!cstrIter.found())
+    if (cstrIter == dictionaryConstructorTablePtr_->end())
     {
-        FatalIOErrorInLookup
-        (
-            dict,
-            "laserModel",
-            modelType,
-            *dictionaryConstructorTablePtr_
-        ) << exit(FatalIOError);
+        FatalErrorInFunction
+            << "Unknown laserModel type "
+            << modelType << nl << nl
+            << "Valid laserModel types are :" << endl
+            << dictionaryConstructorTablePtr_->sortedToc()
+            << exit(FatalError);
     }
+
+
 
     return autoPtr<laserModel>(cstrIter()(dict, mesh));
 }

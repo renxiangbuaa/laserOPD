@@ -49,12 +49,7 @@ Foam::laserParticle::laserParticle
     bool newFormat
 )
 :
-    particle(mesh, is, readFields, newFormat),
-    xy_(Zero),
-    p0_(Zero),
-    p1_(Zero),
-    OPL_(0),
-    dA_(0)
+    particle(mesh, is, readFields)
 {
     if (readFields)
     {
@@ -62,20 +57,20 @@ Foam::laserParticle::laserParticle
         {
             is >> xy_ >> p0_ >> p1_ >> OPL_ >> dA_;
         }
-        else if (!is.checkLabelSize<>() || !is.checkScalarSize<>())
-        {
-            // Non-native label or scalar size
+        // else if (!is.checkLabelSize<>() || !is.checkScalarSize<>())
+        // {
+        //     // Non-native label or scalar size
 
-            is.beginRawRead();
+        //     is.beginRawRead();
 
-            readRawScalar(is, xy_.data(), vector::nComponents);
-            readRawScalar(is, p0_.data(), vector::nComponents);
-            readRawScalar(is, p1_.data(), vector::nComponents);
-            readRawScalar(is, &OPL_);
-            readRawScalar(is, &dA_);
+        //     readRawScalar(is, xy_.data(), vector::nComponents);
+        //     readRawScalar(is, p0_.data(), vector::nComponents);
+        //     readRawScalar(is, p1_.data(), vector::nComponents);
+        //     readRawScalar(is, &OPL_);
+        //     readRawScalar(is, &dA_);
 
-            is.endRawRead();
-        }
+        //     is.endRawRead();
+        // }
         else
         {
             is.read(reinterpret_cast<char*>(&p0_), sizeofFields_);

@@ -52,9 +52,9 @@ Foam::radiation::circularLaser::circularLaser
 )
 :
     laserModel(dict, mesh),
-    ndTheta_(dict.optionalSubDict(type() + "Coeffs").get<label>("nTheta")),
-    ndr_(dict.optionalSubDict(type() + "Coeffs").get<label>("nr")),
-    radius_(dict.optionalSubDict(type() + "Coeffs").get<scalar>("radius"))
+    ndTheta_(readLabel(dict.optionalSubDict(type() + "Coeffs").lookup("nTheta"))),
+    ndr_(readLabel(dict.optionalSubDict(type() + "Coeffs").lookup("nr"))),
+    radius_(readScalar(dict.optionalSubDict(type() + "Coeffs").lookup("radius")))
 {}
 
 
@@ -82,7 +82,7 @@ void Foam::radiation::circularLaser::createCloud(
             magr = mag(rArea);
         }
     }
-    rArea.normalise();
+    rArea = normalised(rArea);
 
     scalar dr = radius_/ndr_;
     scalar dTheta = mathematical::twoPi/ndTheta_;

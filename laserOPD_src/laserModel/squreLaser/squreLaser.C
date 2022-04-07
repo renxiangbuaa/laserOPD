@@ -52,9 +52,9 @@ Foam::radiation::squreLaser::squreLaser
 )
 :
     laserModel(dict, mesh),
-    nLength_(dict.optionalSubDict(type() + "Coeffs").get<label>("nLength")),
-    length_(dict.optionalSubDict(type() + "Coeffs").get<scalar>("length")),
-    directionX_(dict.optionalSubDict(type() + "Coeffs").get<vector>("directionX"))
+    nLength_(readLabel(dict.optionalSubDict(type() + "Coeffs").lookup("nLength"))),
+    length_(readScalar(dict.optionalSubDict(type() + "Coeffs").lookup("length"))),
+    directionX_(dict.optionalSubDict(type() + "Coeffs").lookup("directionX"))
 {}
 
 
