@@ -151,10 +151,16 @@ int main(int argc, char *argv[])
     #include "createFields.H"
 
     // addForlaserOPD: Creating radiation model
+    // for of-v2006 and of-v2106
     autoPtr<radiation::radiationModel> radiation
     (
         radiation::radiationModel::New(rho)
     );
+    // // for of-v7 and of-v8
+    // autoPtr<radiationModel> radiation
+    // (
+    //     radiationModel::New(rho)
+    // );
     ...
 
     while (runTime.run())
