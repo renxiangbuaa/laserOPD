@@ -1,0 +1,71 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+  =========                 |
+  \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Version:  7  
+     \\/     M anipulation  |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       dictionary;
+    location    "constant";
+    object      radiationProperties;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+radiation       on;
+
+radiationModel  laserOPD;//laserBeam;//
+
+// Number of flow iterations per radiation iteration
+solverFreq 10;
+
+  laserModel             circularLaser;//square
+  circularLaserCoeffs
+  {
+    nTheta	              100;
+    nr 	                  100;
+    radius                0.000062775;
+  }
+
+  squareLaserCoeffs
+  {
+    nLength               100;
+    length                0.08;
+    directionX            (1 0 0);
+  }
+
+  circularInSquareLaserCoeffs
+  {
+    nLength               100;
+    length                0.08;
+    directionX            (1 0 0);
+    radius                0.03;
+  }
+
+  maxTrackLength        0.004185;
+  focalLaserPosition    (0.004002135404 0.0012235755584 -0.00062775);
+  laserDirection        (-0.956304756 -0.292371704 0);
+
+  GladstoneDale         0.0002285714286;
+  densityRef            1.225;
+
+	
+	// laserPower          1e-9;
+	// sigma               0.005;
+	// qualityBeamLaser    1.0;
+
+
+absorptionEmissionModel none;
+
+scatterModel    none;
+
+// sootModel       none;
+
+// transmissivityModel none;
+
+nTheta	              100;
+nr 	                  100;
+focalLaserRadius                0.000062775;
