@@ -1,0 +1,113 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
+|  \\    /   O peration     | Version:  2.0.0                                 |
+|   \\  /    A nd           | Web:      www.OpenFOAM.org                      |
+|    \\/     M anipulation  |                                                 |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       dictionary;
+    location    "system";
+    object      fvSolution;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+solvers
+{
+    p
+    {
+        solver          GAMG;
+        smoother        GaussSeidel;
+        tolerance       1e-6;
+        relTol          0.01;
+    }
+
+    pFinal
+    {
+        $p;
+        relTol          0;
+    }
+
+    "(rho|U|k|omega|e|nuTilda)"
+    {
+        solver          PBiCGStab;
+        preconditioner  DILU;
+        tolerance       1e-6;
+        relTol          0.1;
+    }
+
+    "(rho|U|k|omega|e|nuTilda)Final"
+    {
+        $U;
+        relTol          0;
+    }
+}
+
+SIMPLE
+{
+    residualControl
+    {
+        p               1e-4;
+        U               1e-4;
+        "(k|omega|e)"   1e-4;
+    }
+
+    nNonOrthogonalCorrectors 0;
+    pMinFactor      0.1;
+    pMaxFactor      2;
+}
+
+PIMPLE
+{
+    momentumPredictor   yes;
+    transonic           no;
+    nOuterCorrectors    10;
+    nCorrectors         1;
+    nNonOrthogonalCorrectors 0;
+
+    pMaxFactor          10;
+    pMinFactor          0.01;
+
+    // // of-7
+    // outerCorrectorResidualControl
+    // {
+    //     "(U|k|omega)"
+    //     {
+    //         relTol          0;
+    //         tolerance       0.0001;
+    //     }
+    // }
+
+    // of-v2106
+    residualControl
+    {
+        "(U|k|omega)"
+        {
+            relTol          0;
+            tolerance       0.0001;
+        }
+    }
+
+    turbOnFinalIterOnly no;    
+}
+
+relaxationFactors
+{
+    fields
+    {
+        p               1;
+        rho             1;
+    }
+    equations
+    {
+        U               0.9;
+        e               0.7;
+        "(k|epsilon|omega)" 0.8;
+    }
+}
+
+
+// ************************************************************************* //
